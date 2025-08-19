@@ -34,16 +34,35 @@ const CreateScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isExpense, setIsExpense] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [titleValidationError, setTitleValidationError] = useState("");
+  const [categoryValidationError, setCategoryValidationError] = useState("");
+  const [amountValidationError, setAmountValidationError] = useState("");
   const handleCreate = async () => {
+    setTitleValidationError("");
+    setCategoryValidationError("");
+    setAmountValidationError("");
+
     // validations
-    if (!title.trim()) return Alert.alert("Error", "Please enter a transaction title");
+    // if (!amount) {
+    //   setAmountValidationError("Please enter an amount");
+    //   return;
+    // }
+    // if (!title.trim()) {
+    //   setTitleValidationError("Please enter a transaction title");
+    //   return;
+    // }
+    // if (!selectedCategory) {
+    //   setCategoryValidationError("Please select a category");
+    //   return;
+    // }
+
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
       Alert.alert("Error", "Please enter a valid amount");
       return;
     }
 
-    if (!selectedCategory) return Alert.alert("Error", "Please select a category");
+    if (!selectedCategory)
+      return Alert.alert("Error", "Please select a category");
 
     setIsLoading(true);
     try {
@@ -85,17 +104,27 @@ const CreateScreen = () => {
     <View style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
           <Ionicons name="arrow-back" size={24} color={COLORS.text} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>New Transaction</Text>
         <TouchableOpacity
-          style={[styles.saveButtonContainer, isLoading && styles.saveButtonDisabled]}
+          style={[
+            styles.saveButtonContainer,
+            isLoading && styles.saveButtonDisabled,
+          ]}
           onPress={handleCreate}
           disabled={isLoading}
         >
-          <Text style={styles.saveButton}>{isLoading ? "Saving..." : "Save"}</Text>
-          {!isLoading && <Ionicons name="checkmark" size={18} color={COLORS.primary} />}
+          <Text style={styles.saveButton}>
+            {isLoading ? "Saving..." : "Save"}
+          </Text>
+          {!isLoading && (
+            <Ionicons name="checkmark" size={18} color={COLORS.primary} />
+          )}
         </TouchableOpacity>
       </View>
 
@@ -112,7 +141,12 @@ const CreateScreen = () => {
               color={isExpense ? COLORS.white : COLORS.expense}
               style={styles.typeIcon}
             />
-            <Text style={[styles.typeButtonText, isExpense && styles.typeButtonTextActive]}>
+            <Text
+              style={[
+                styles.typeButtonText,
+                isExpense && styles.typeButtonTextActive,
+              ]}
+            >
               Expense
             </Text>
           </TouchableOpacity>
@@ -128,7 +162,12 @@ const CreateScreen = () => {
               color={!isExpense ? COLORS.white : COLORS.income}
               style={styles.typeIcon}
             />
-            <Text style={[styles.typeButtonText, !isExpense && styles.typeButtonTextActive]}>
+            <Text
+              style={[
+                styles.typeButtonText,
+                !isExpense && styles.typeButtonTextActive,
+              ]}
+            >
               Income
             </Text>
           </TouchableOpacity>
@@ -142,11 +181,19 @@ const CreateScreen = () => {
             placeholder="0.00"
             placeholderTextColor={COLORS.textLight}
             value={amount}
-            onChangeText={setAmount}
+            onChangeText={(text) => {
+              //check if its not an number do nothing
+              if (isNaN(text)) {
+                return;
+              }
+              setAmount(text);
+            }}
             keyboardType="numeric"
           />
         </View>
-
+        {amountValidationError ? (
+          <Text style={styles.errorText}>{amountValidationError}</Text>
+        ) : null}
         {/* INPUT CONTAINER */}
         <View style={styles.inputContainer}>
           <Ionicons
@@ -163,10 +210,14 @@ const CreateScreen = () => {
             onChangeText={setTitle}
           />
         </View>
+        {titleValidationError ? (
+          <Text style={styles.errorText}>{titleValidationError}</Text>
+        ) : null}
 
         {/* TITLE */}
         <Text style={styles.sectionTitle}>
-          <Ionicons name="pricetag-outline" size={16} color={COLORS.text} /> Category
+          <Ionicons name="pricetag-outline" size={16} color={COLORS.text} />{" "}
+          Category
         </Text>
 
         <View style={styles.categoryGrid}>
@@ -175,20 +226,26 @@ const CreateScreen = () => {
               key={category.id}
               style={[
                 styles.categoryButton,
-                selectedCategory === category.name && styles.categoryButtonActive,
+                selectedCategory === category.name &&
+                  styles.categoryButtonActive,
               ]}
               onPress={() => setSelectedCategory(category.name)}
             >
               <Ionicons
                 name={category.icon}
                 size={20}
-                color={selectedCategory === category.name ? COLORS.white : COLORS.text}
+                color={
+                  selectedCategory === category.name
+                    ? COLORS.white
+                    : COLORS.text
+                }
                 style={styles.categoryIcon}
               />
               <Text
                 style={[
                   styles.categoryButtonText,
-                  selectedCategory === category.name && styles.categoryButtonTextActive,
+                  selectedCategory === category.name &&
+                    styles.categoryButtonTextActive,
                 ]}
               >
                 {category.name}

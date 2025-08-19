@@ -29,6 +29,8 @@ export const useTransactions = (userId) => {
 
   const fetchSummary = useCallback(async () => {
     try {
+      // console.log(userId);
+
       const response = await fetch(`${API_URL}/transactions/summary/${userId}`);
       const data = await response.json();
       setSummary(data);
@@ -53,7 +55,9 @@ export const useTransactions = (userId) => {
 
   const deleteTransaction = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/transactions/${id}`, { method: "DELETE" });
+      const response = await fetch(`${API_URL}/transactions/${id}`, {
+        method: "DELETE",
+      });
       if (!response.ok) throw new Error("Failed to delete transaction");
 
       // Refresh data after deletion

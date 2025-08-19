@@ -2,7 +2,7 @@
 export const API_URL = "https://spendwise-w55r.onrender.com/api";
 
 // For local development, use localhost through Expo dev server
-//export const API_URL = "http://localhost:5001/api";
+// export const API_URL = "http://192.168.1.46:5001/api";
 
 // API endpoints
 //export const ENDPOINTS = {
