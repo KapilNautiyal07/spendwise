@@ -15,7 +15,6 @@ export async function getTransactionsByUserId(req, res) {
   }
 }
 
-
 export async function createTransaction(req, res) {
   try {
     const { title, amount, category, user_id } = req.body;
@@ -64,7 +63,7 @@ export async function deleteTransaction(req, res) {
 export async function getSummaryByUserId(req, res) {
   try {
     const { userId } = req.params;
-
+    console.log("Fetching summary for user:", userId);
     const balanceResult = await sql`
       SELECT COALESCE(SUM(amount), 0) as balance FROM transactions WHERE user_id = ${userId}
     `;
@@ -78,7 +77,9 @@ export async function getSummaryByUserId(req, res) {
       SELECT COALESCE(SUM(amount), 0) as expenses FROM transactions
       WHERE user_id = ${userId} AND amount < 0
     `;
-
+    console.log("Balance:", balanceResult[0].balance);
+    console.log("Income:", incomeResult[0].income);
+    console.log("Expenses:", expensesResult[0].expenses);
     res.status(200).json({
       balance: balanceResult[0].balance,
       income: incomeResult[0].income,
